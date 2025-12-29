@@ -1,13 +1,23 @@
-const FREQS = [16000, 16500, 16800, 17200, 17600];
+const F0 = 16800;
+const F1 = 17600;
+const THRESHOLD = -55;
+const BIT_MS = 100;
+
+let last = 0;
+let bits = "";
 
 function detectFrequencies(data, sampleRate, fftSize) {
-  const binHz = sampleRate / fftSize;
-  let out = "";
+  const now = performance.now();
+  if (now - last < BIT_MS) return;
 
-  for (const f of FREQS) {
-    const i = Math.round(f / binHz);
-    out += `${(f/1000).toFixed(1)} kHz: ${data[i].toFixed(1)} dB\n`;
-  }
+  const bin = sampleRate / fftSize;
+  const p0 = data[Math.round(F0 / bin)];
+  const p1 = data[Math.round(F1 / bin)];
 
-  document.getElementById("screen").innerText = out;
+  if (p1 > THRESHOLD && p1 > p0 + 6) bits += "1";
+  else if (p0 > THRESHOLD && p0 > p1 + 6) bits += "0";
+
+  last = now;
+
+  document.getElementById("screen").innerText = bits;
 }
