@@ -1,5 +1,5 @@
-const F0 = 18500;
-const F1 = 19500;
+const F0 = 17000;
+const F1 = 17500;
 const THRESHOLD = -65;
 const BIT_MS = 50;
 

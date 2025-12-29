@@ -3,8 +3,8 @@ import * as WavEncoder from "wav-encoder";
 
 const sampleRate = 44100;
 const bitDuration = 0.07;
-const f0 = 18500;
-const f1 = 19500;
+const f0 = 17000;
+const f1 = 17500;
 const volume = 0.3;
 
 // ---------- CRC-8 ----------
