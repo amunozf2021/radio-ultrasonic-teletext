@@ -1,7 +1,7 @@
 const F0 = 12500;
 const F1 = 14500;
 const THRESHOLD = -45;
-const MIN_CHANGE_MS = 80;
+const MIN_CHANGE_MS = 40;
 
 let lastTone = null;
 let lastChange = 0;

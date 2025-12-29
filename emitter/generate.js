@@ -65,7 +65,7 @@ function encode(text) {
 async function main() {
   fs.mkdirSync("tones", { recursive: true });
 
-  const payload = "P120";
+  const payload = "10101010";
   const frame = `${payload}|${crc8(payload)}`;
   const audio = encode(frame);
 
