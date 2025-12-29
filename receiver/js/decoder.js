@@ -1,4 +1,4 @@
-const FREQS = [14000, 15000, 16000, 16500, 16800, 17200, 17600];
+const FREQS = [12500, 13000, 13500, 14000, 14500];
 
 function detectFrequencies(data, sampleRate, fftSize) {
   const binHz = sampleRate / fftSize;
