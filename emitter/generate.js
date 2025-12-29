@@ -5,7 +5,7 @@ const sampleRate = 44100;
 const bitDuration = 0.12;
 const f0 = 12500;
 const f1 = 14500;
-const volume = 0.3;
+const volume = 0.8;
 
 // ---------- CRC-8 ----------
 function crc8(str) {
