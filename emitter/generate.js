@@ -2,7 +2,7 @@ import fs from "fs";
 import * as WavEncoder from "wav-encoder";
 
 const sampleRate = 44100;
-const bitDuration = 0.1;
+const bitDuration = 0.12;
 const f0 = 12500;
 const f1 = 14500;
 const volume = 0.3;
