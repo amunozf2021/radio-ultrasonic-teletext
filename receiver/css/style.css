@@ -1,0 +1,13 @@
+body {
+  background: black;
+  color: #0f0;
+  font-family: monospace;
+  text-align: center;
+}
+button {
+  font-size: 18px;
+  margin: 10px;
+}
+pre {
+  font-size: 18px;
+}

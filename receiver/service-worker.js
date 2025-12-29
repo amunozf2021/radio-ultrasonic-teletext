@@ -1,0 +1,18 @@
+const CACHE_NAME = "teletexto-v1";
+const FILES = [
+  "./",
+  "./index.html",
+  "./manifest.json",
+  "./css/style.css",
+  "./js/listener.js",
+  "./js/decoder.js",
+  "./js/teletext.js"
+];
+
+self.addEventListener("install", e => {
+  e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(FILES)));
+});
+
+self.addEventListener("fetch", e => {
+  e.respondWith(caches.match(e.request).then(r => r || fetch(e.request)));
+});

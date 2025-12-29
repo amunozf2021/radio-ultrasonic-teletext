@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Radio Teletexto</title>
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<button id="start">Activar escucha</button>
+<pre id="screen">Esperando comando...</pre>
+
+<script src="js/listener.js"></script>
+<script src="js/decoder.js"></script>
+<script src="js/teletext.js"></script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("./service-worker.js");
+}
+</script>
+</body>
+</html>
