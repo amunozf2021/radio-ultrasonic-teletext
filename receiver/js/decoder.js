@@ -1,5 +1,5 @@
 const F0 = 12500;
-const F1 = 14500;
+const F1 = 13500;
 
 const BIT_MS = 120;
 const MIN_POWER_DB = -55;
@@ -10,7 +10,7 @@ let bits = "";
 let lastBitTime = 0;
 
 const GAIN_0 = 1.0;   // para 12.5 kHz
-const GAIN_1 = 1.8;   // para 14.5 kHz (más atenuada)
+const GAIN_1 = 2.2;   // para 14.5 kHz (más atenuada)
 
 function detectFrequencies(data, sampleRate, fftSize) {
   const now = performance.now();

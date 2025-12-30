@@ -4,7 +4,7 @@ import * as WavEncoder from "wav-encoder";
 const sampleRate = 44100;
 const bitDuration = 0.12;
 const f0 = 12500;
-const f1 = 14500;
+const f1 = 13500;
 const volume = 0.8;
 
 // ---------- TONE ----------
