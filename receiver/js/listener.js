@@ -5,7 +5,7 @@ document.getElementById("start").onclick = async () => {
   const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
   const src = ctx.createMediaStreamSource(stream);
   analyser = ctx.createAnalyser();
-  analyser.fftSize = 16384;
+  analyser.fftSize = 8192;
   analyser.smoothingTimeConstant = 0;
   src.connect(analyser);
   buffer = new Float32Array(analyser.frequencyBinCount);

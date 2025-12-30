@@ -3,12 +3,10 @@ import * as WavEncoder from "wav-encoder";
 
 const sampleRate = 44100;
 const bitDuration = 0.12;
-const f0 = 12500;
-const f1 = 13500;
+const freq = 13000;
 const volume = 0.8;
 
-// ---------- TONE ----------
-function tone(freq, duration) {
+function tone(duration) {
   const samples = Math.floor(sampleRate * duration);
   const buffer = new Float32Array(samples);
   for (let i = 0; i < samples; i++) {
@@ -17,62 +15,51 @@ function tone(freq, duration) {
   return buffer;
 }
 
-// ---------- CONCAT ----------
-function concatFloat32(buffers) {
-  let total = 0;
-  for (const b of buffers) total += b.length;
-
-  const result = new Float32Array(total);
-  let offset = 0;
-  for (const b of buffers) {
-    result.set(b, offset);
-    offset += b.length;
-  }
-  return result;
+function silence(duration) {
+  return new Float32Array(Math.floor(sampleRate * duration));
 }
 
-// ---------- ENCODE ----------
-function encode(bitString) {
+function concat(buffers) {
+  let total = 0;
+  buffers.forEach(b => total += b.length);
+  const out = new Float32Array(total);
+  let off = 0;
+  buffers.forEach(b => {
+    out.set(b, off);
+    off += b.length;
+  });
+  return out;
+}
+
+function encode(bits) {
   const chunks = [];
 
-  // PREÁMBULO: 6 bits de "1"
-  for (let i = 0; i < 6; i++) {
-    chunks.push(tone(f1, bitDuration));
+  // PREÁMBULO: 5 unos
+  for (let i = 0; i < 5; i++) chunks.push(tone(bitDuration));
+
+  for (const b of bits) {
+    if (b === "1") chunks.push(tone(bitDuration));
+    else chunks.push(silence(bitDuration));
   }
 
-  // DATOS (bits directos, NO ASCII)
-  for (const b of bitString) {
-    chunks.push(tone(b === "1" ? f1 : f0, bitDuration));
-  }
-
-  // FIN: 3 bits de 0
-  for (let i = 0; i < 3; i++) {
-    chunks.push(tone(f0, bitDuration));
-  }
-
-  return concatFloat32(chunks);
+  return concat(chunks);
 }
 
-// ---------- MAIN ----------
 async function main() {
   fs.mkdirSync("tones", { recursive: true });
 
-  // PRUEBA CONTROLADA
   const payload = "10101010";
   const audio = encode(payload);
 
-  console.log("Samples:", audio.length);
   console.log("Duration:", (audio.length / sampleRate).toFixed(2), "s");
 
-  const wavData = {
+  const buffer = await WavEncoder.encode({
     sampleRate,
     channelData: [audio]
-  };
+  });
 
-  const buffer = await WavEncoder.encode(wavData);
   fs.writeFileSync("tones/test.wav", Buffer.from(buffer));
-
-  console.log("✔ WAV generado correctamente");
+  console.log("✔ WAV generado");
 }
 
 main().catch(console.error);
