@@ -3,11 +3,14 @@ const F1 = 14500;
 
 const BIT_MS = 120;
 const MIN_POWER_DB = -55;
-const MIN_RATIO = 1.4;
+const MIN_RATIO = 1.15;
 
 let state = "idle";
 let bits = "";
 let lastBitTime = 0;
+
+const GAIN_0 = 1.0;   // para 12.5 kHz
+const GAIN_1 = 1.8;   // para 14.5 kHz (más atenuada)
 
 function detectFrequencies(data, sampleRate, fftSize) {
   const now = performance.now();
@@ -23,8 +26,8 @@ function detectFrequencies(data, sampleRate, fftSize) {
   }
 
   // decidir bit dominante
-  const p0 = Math.pow(10, p0db / 10);
-  const p1 = Math.pow(10, p1db / 10);
+  const p0 = Math.pow(10, p0db / 10) * GAIN_0;
+  const p1 = Math.pow(10, p1db / 10) * GAIN_1;
 
   let bit = null;
   if (p1 / p0 > MIN_RATIO) bit = "1";
