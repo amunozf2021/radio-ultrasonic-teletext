@@ -7,19 +7,6 @@ const f0 = 12500;
 const f1 = 14500;
 const volume = 0.8;
 
-// ---------- CRC-8 ----------
-function crc8(str) {
-  let crc = 0x00;
-  for (let i = 0; i < str.length; i++) {
-    crc ^= str.charCodeAt(i);
-    for (let b = 0; b < 8; b++) {
-      crc = (crc & 0x80) ? ((crc << 1) ^ 0x07) : (crc << 1);
-      crc &= 0xff;
-    }
-  }
-  return crc.toString(16).toUpperCase().padStart(2, "0");
-}
-
 // ---------- TONE ----------
 function tone(freq, duration) {
   const samples = Math.floor(sampleRate * duration);
@@ -45,19 +32,24 @@ function concatFloat32(buffers) {
 }
 
 // ---------- ENCODE ----------
-function encode(text) {
+function encode(bitString) {
   const chunks = [];
 
-  chunks.push(tone(f1, 0.5)); // preámbulo
-
-  for (const c of text) {
-    const bits = c.charCodeAt(0).toString(2).padStart(8, "0");
-    for (const b of bits) {
-      chunks.push(tone(b === "1" ? f1 : f0, bitDuration));
-    }
+  // PREÁMBULO: 6 bits de "1"
+  for (let i = 0; i < 6; i++) {
+    chunks.push(tone(f1, bitDuration));
   }
 
-  chunks.push(tone(f0, 0.3)); // fin
+  // DATOS (bits directos, NO ASCII)
+  for (const b of bitString) {
+    chunks.push(tone(b === "1" ? f1 : f0, bitDuration));
+  }
+
+  // FIN: 3 bits de 0
+  for (let i = 0; i < 3; i++) {
+    chunks.push(tone(f0, bitDuration));
+  }
+
   return concatFloat32(chunks);
 }
 
@@ -65,20 +57,20 @@ function encode(text) {
 async function main() {
   fs.mkdirSync("tones", { recursive: true });
 
+  // PRUEBA CONTROLADA
   const payload = "10101010";
-  const frame = `${payload}|${crc8(payload)}`;
-  const audio = encode(frame);
+  const audio = encode(payload);
 
   console.log("Samples:", audio.length);
   console.log("Duration:", (audio.length / sampleRate).toFixed(2), "s");
 
   const wavData = {
     sampleRate,
-    channelData: [audio]   // 🔴 ESTA ES LA CLAVE
+    channelData: [audio]
   };
 
   const buffer = await WavEncoder.encode(wavData);
-  fs.writeFileSync("tones/P120.wav", Buffer.from(buffer));
+  fs.writeFileSync("tones/test.wav", Buffer.from(buffer));
 
   console.log("✔ WAV generado correctamente");
 }
